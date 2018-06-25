@@ -30,6 +30,7 @@ class BarChartViewController: DemoBaseViewController {
         
         self.options = [.toggleValues,
                         .toggleHighlight,
+                        .toggleGradient,
                         .animateX,
                         .animateY,
                         .animateXY,
@@ -142,9 +143,31 @@ class BarChartViewController: DemoBaseViewController {
         
 //        chartView.setNeedsDisplay()
     }
+
+    private func setup(_ dataSet: BarChartDataSet) {
+        if dataSet.drawBarGradientEnabled {
+            dataSet.colors = [.black, .red, .white]
+            dataSet.gradientPositions = [0, 40, 100]
+        } else {
+            dataSet.colors = ChartColorTemplates.material()
+            dataSet.gradientPositions = nil
+        }
+    }
     
     override func optionTapped(_ option: Option) {
-        super.handleOption(option, forChartView: chartView)
+        switch option {
+        case .toggleGradient:
+
+            chartView.data?.dataSets
+                .compactMap { $0 as? BarChartDataSet }
+                .forEach { (set) in
+                    set.drawBarGradientEnabled = !set.drawBarGradientEnabled
+                    setup(set)
+                }
+            chartView.setNeedsDisplay()
+        default:
+            super.handleOption(option, forChartView: chartView)
+        }
     }
     
     // MARK: - Actions

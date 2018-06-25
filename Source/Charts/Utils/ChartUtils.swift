@@ -20,6 +20,13 @@ import CoreGraphics
 import Cocoa
 #endif
 
+extension Array where Element == CGRect {
+    func union() -> Element? {
+        guard !isEmpty else { return nil }
+        return reduce(nil, { $0?.union($1) ?? $1 })
+    }
+}
+
 extension Comparable {
     func clamped(to range: ClosedRange<Self>) -> Self {
         if self > range.upperBound {
