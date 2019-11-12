@@ -171,7 +171,7 @@ class LineChart1ViewController: DemoBaseViewController {
             chartView.setNeedsDisplay()
             
         case .toggleHorizontalCubic:
-            for case let set as LineChartDataSet in data {
+            for set in chartView.data!.dataSets as! [LineChartDataSet] {
                 set.mode = (set.mode == .cubicBezier) ? .horizontalBezier : .cubicBezier
             }
             chartView.setNeedsDisplay()

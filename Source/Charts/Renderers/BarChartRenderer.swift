@@ -331,15 +331,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         let valueToPixelMatrix = trans.valueToPixelMatrix
         
         prepareBuffer(dataSet: dataSet, index: index)
-//<<<<<<< HEAD
         trans.rectValuesToPixel(&_buffers[index].rects)
-
-//        let borderWidth = dataSet.barBorderWidth
-//        let borderColor = dataSet.barBorderColor
-//        let drawBorder = borderWidth > 0.0
-//=======
-//        trans.rectValuesToPixel(&_buffers[index])
-//>>>>>>> 5aadccf1... Add gradient bars for BarChart
         
         context.saveGState()
         
@@ -377,7 +369,9 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 _barShadowRectBuffer.size.height = viewPortHandler.contentHeight
                 
                 context.setFillColor(dataSet.barShadowColor.cgColor)
-                context.fill(_barShadowRectBuffer)
+                let bezierPath = UIBezierPath(roundedRect: _barShadowRectBuffer, cornerRadius: 8)
+                context.addPath(bezierPath.cgPath)
+                context.drawPath(using: .fill)
             }
         }
 
@@ -401,7 +395,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 }
                 
                 context.setFillColor(dataSet.barShadowColor.cgColor)
-                let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: 4)
+                let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: 8)
                 context.addPath(bezierPath.cgPath)
                 context.drawPath(using: .fill)
             }
@@ -491,7 +485,8 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             guard viewPortHandler.isInBoundsRight(barRect.minX) else { break }
 
             context.beginPath()
-            context.addRect(barRect)
+            let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: 8)
+            context.addPath(bezierPath.cgPath)
             context.clip()
             context.drawLinearGradient(gradient, start: gradientStart, end: gradientEnd, options: [])
 
@@ -523,14 +518,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
         for j in stride(from: 0, to: buffer.rects.count, by: 1)
         {
-//<<<<<<< HEAD
             let barRect = buffer.rects[j]
-//=======
-//            let barRect = buffer[j]
-//
-//            guard viewPortHandler.isInBoundsLeft(barRect.maxX) else { continue }
-//            guard viewPortHandler.isInBoundsRight(barRect.minX) else { break }
-//>>>>>>> 5aadccf1... Add gradient bars for BarChart
 
             if (!viewPortHandler.isInBoundsLeft(barRect.origin.x + barRect.size.width))
             {
@@ -548,7 +536,9 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
 
-            context.fill(barRect)
+            let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: 8)
+            context.addPath(bezierPath.cgPath)
+            context.drawPath(using: .fill)
 
             if drawBorder
             {
@@ -928,7 +918,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 
                 setHighlightDrawPos(highlight: high, barRect: barRect)
                 
-                let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: 4)
+                let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: 8)
                 context.addPath(bezierPath.cgPath)
                 context.drawPath(using: .fill)
             }
