@@ -334,9 +334,9 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 //<<<<<<< HEAD
         trans.rectValuesToPixel(&_buffers[index].rects)
 
-        let borderWidth = dataSet.barBorderWidth
-        let borderColor = dataSet.barBorderColor
-        let drawBorder = borderWidth > 0.0
+//        let borderWidth = dataSet.barBorderWidth
+//        let borderColor = dataSet.barBorderColor
+//        let drawBorder = borderWidth > 0.0
 //=======
 //        trans.rectValuesToPixel(&_buffers[index])
 //>>>>>>> 5aadccf1... Add gradient bars for BarChart
@@ -416,7 +416,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
     private func drawGradientBars(
         context: CGContext,
-        dataSet: BarChartDataSetProtocol,
+        dataSet: IBarChartDataSet,
         buffer: BarChartRenderer.Buffer,
         matrix: CGAffineTransform) {
 
@@ -426,7 +426,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             return
         }
 
-        guard let boundingBox = buffer.union() else { return }
+        guard let boundingBox = buffer.rects.union() else { return }
         guard !boundingBox.isNull, !boundingBox.isInfinite, !boundingBox.isEmpty else {
             return
         }
@@ -464,10 +464,13 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
         for color in dataSet.colors.reversed()
         {
-            guard let (r, g, b, a) = color.nsuirgba else {
-                continue
+            var r : CGFloat = 0
+            var g : CGFloat = 0
+            var b : CGFloat = 0
+            var a: CGFloat = 0
+            if color.getRed(&r, green: &g, blue: &b, alpha: &a) {
+                gradientColorComponents += [r, g, b, a]
             }
-            gradientColorComponents += [r, g, b, a]
         }
 
         let baseColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -479,7 +482,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 return
         }
 
-        for barRect in buffer
+        for barRect in buffer.rects
         {
             context.saveGState()
             defer { context.restoreGState() }
@@ -503,7 +506,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
     private func drawDefaultBars(
         context: CGContext,
-        dataSet: BarChartDataSetProtocol,
+        dataSet: IBarChartDataSet,
         dateSetIndex: Int,
         buffer: BarChartRenderer.Buffer) {
         let drawBorder = dataSet.barBorderWidth > 0
