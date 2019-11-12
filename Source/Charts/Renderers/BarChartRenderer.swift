@@ -468,13 +468,16 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         }
 
         let baseColorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let gradient = CGGradient(
-            colorSpace: baseColorSpace,
-            colorComponents: &gradientColorComponents,
-            locations: &gradientLocations,
-            count: gradientLocations.count) else {
-                return
-        }
+        let colours = [UIColor(red: 0.77, green: 0.32, blue: 0.25, alpha: 1.0).cgColor, UIColor(red: 0.46, green: 0.56, blue: 0.19, alpha: 1.0).cgColor] as CFArray
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let gradient = CGGradient(colorsSpace: colorSpace, colors: colours , locations: nil) else { return }
+//        guard let gradient = CGGradient(
+//            colorSpace: baseColorSpace,
+//            colorComponents: &gradientColorComponents,
+//            locations: &gradientLocations,
+//            count: gradientLocations.count) else {
+//                return
+//        }
 
         for barRect in buffer.rects
         {
